@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Felix Lab — Warung Komunitas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Sans:opsz,wght@9..40,400..800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="icon" type="image/png" href="assets/yt-profile.png">
+</head>
+<body>
+
+    <div id="toast" class="toast hidden">
+        <i id="toastIcon" class="fa-solid fa-circle-check"></i>
+        <span id="toastMsg">Notifikasi</span>
+    </div>
+
+    <!-- ===== HEADER ===== -->
+    <header id="topbar">
+        <div class="topbar-inner">
+            <button type="button" class="brand tabbtn active" data-tab="home">
+                <span class="brand-badge"><i class="fa-solid fa-flask"></i></span>
+                <span class="brand-words">FELIX<em>LAB</em></span>
+                <span id="connPill" class="status-strip warn" title="Status koneksi Supabase">connecting</span>
+            </button>
+
+            <nav class="tabs" aria-label="Tab">
+                <button type="button" class="tabbtn" data-tab="news">News</button>
+                <button type="button" class="tabbtn" data-tab="community">Community</button>
+                <button type="button" class="tabbtn" data-tab="resources">Resources</button>
+            </nav>
+
+            <div class="topbar-actions">
+                <div id="authBar" class="authbar-slot"></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- ===== HOME ===== -->
+        <section id="tab-home" class="tab-content">
+            <div class="hero">
+                <div class="hero-copy">
+                    <div class="kicker"><span class="kicker-dot"></span> tempat nongkrong komunitas</div>
+                    <h1 class="display">Ngoprek MCPE bareng, <mark>tanpa ribet.</mark></h1>
+                    <p>Update tutorial, mod &amp; script buat mobile, plus forum diskusi subscriber. Seriusan seru di sini.</p>
+                    <div class="hero-cta">
+                        <a class="btn btn-ink" href="https://youtube.com/@felixlabofc?si=uCdc-20amQsP1DmV" target="_blank" rel="noopener">
+                            <img src="assets/youtube_icon_bg.png" class="btn-ico" alt=""> YouTube @felixlabofc
+                        </a>
+                        <button type="button" class="btn btn-accent tabbtn" data-tab="community">
+                            <i class="fa-solid fa-comment-dots"></i> Ikut diskusi
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-art" aria-hidden="true">
+                    <div class="sticker sticker-ava">
+                        <img src="assets/yt-profile.png?v=5" alt="Maskot Felix Lab">
+                    </div>
+                    <div class="sticker sticker-speech"><span>woi, ikut diskusi dong!</span> <i class="fa-solid fa-hand-point-left"></i></div>
+                    <div class="sticker sticker-mini">RAM 2GB aman</div>
+                </div>
+            </div>
+
+            <div class="trio">
+                <div class="card info-card">
+                    <div class="info-ico ico-news"><i class="fa-solid fa-bullhorn"></i></div>
+                    <h3>News resmi</h3>
+                    <p>Pengumuman resmi cuma dari tangan Felix Lab. Jangan ikut nimbrung.</p>
+                    <button type="button" class="linklike tabbtn" data-tab="news">Lihat news <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+                <div class="card info-card">
+                    <div class="info-ico ico-comm"><i class="fa-solid fa-users"></i></div>
+                    <h3>Community feed</h3>
+                    <p>Bagi mod, show-off build, atau nanya hal dasar. Semua dipersilakan.</p>
+                    <button type="button" class="linklike tabbtn" data-tab="community">Buka forum <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+                <div class="card info-card">
+                    <div class="info-ico ico-res"><i class="fa-solid fa-box-open"></i></div>
+                    <h3>Resources</h3>
+                    <p>Shader, mod, dan script koleksi Felix Lab. Copas, jalanin, beres.</p>
+                    <button type="button" class="linklike tabbtn" data-tab="resources">Ambil file <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== NEWS ===== -->
+        <section id="tab-news" class="tab-content hidden">
+            <div class="feed-head">
+                <div>
+                    <h2>News <span class="stamp">OFFICIAL</span></h2>
+                    <p class="feed-sub">Pengumuman resmi, hanya bisa ditulis oleh Felix Lab.</p>
+                </div>
+                <div id="createNewsBtn"></div>
+            </div>
+            <div id="newsFeed" class="feed">
+                <div class="empty"><i class="fa-solid fa-inbox"></i><span>Sambungkan Supabase dulu di ikon stopkontak di atas.</span></div>
+            </div>
+        </section>
+
+        <!-- ===== COMMUNITY ===== -->
+        <section id="tab-community" class="tab-content hidden">
+            <div class="feed-head">
+                <div>
+                    <h2>Community</h2>
+                    <p class="feed-sub">Posting bebas untuk member terpercaya. Yang belum verified, masih bisa baca &amp; komentar.</p>
+                </div>
+                <span id="permBadge" class="perm-badge warn"><i class="fa-solid fa-hourglass-half"></i> mengecek akses…</span>
+            </div>
+
+            <div id="createPostBox" class="card postbox">
+                <div class="postbox-row">
+                    <img id="cpAvatar" class="p-ava md" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="" onerror="this.onerror=null;this.src='assets/yt-profile.png'">
+                    <input id="postText" type="text" maxlength="500" placeholder="Mau cerita apa? (mod, build, script…)">
+                </div>
+                <div class="postbox-foot">
+                    <input id="postImage" type="url" placeholder="URL gambar lampiran (opsional)">
+                    <button type="button" class="btn btn-ink sm" onclick="createPost()"><i class="fa-solid fa-paper-plane"></i> Posting</button>
+                </div>
+            </div>
+
+            <div class="feed-tools">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="cmSearch" type="text" placeholder="cari post komunitas…" oninput="setCmSearch(this.value)">
+                </div>
+                <div class="sort-chips">
+                    <button type="button" class="sort-chip on" id="cmSortLike" onclick="setCmSort('like')"><i class="fa-solid fa-fire"></i> Paling disukai</button>
+                    <button type="button" class="sort-chip" id="cmSortNew" onclick="setCmSort('new')"><i class="fa-solid fa-clock"></i> Terbaru</button>
+                </div>
+            </div>
+
+            <div id="communityFeed" class="feed"></div>
+        </section>
+
+        <!-- ===== RESOURCES ===== -->
+        <section id="tab-resources" class="tab-content hidden">
+            <div class="feed-head">
+                <div>
+                    <h2>Resources</h2>
+                    <p class="feed-sub">Koleksi unduhan buatan Felix Lab. Copas tautannya, jalanin, beres.</p>
+                </div>
+                <div id="resourceAdminBtn"></div>
+            </div>
+            <div class="feed-tools">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="resSearch" type="text" placeholder="cari shader / mod / script…" oninput="renderResGrid(this.value)">
+                </div>
+            </div>
+            <div id="resourceGrid" class="res-grid"></div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="foot-inner">
+            <span class="foot-brand">FELIX<em>LAB</em></span>
+            <a href="https://youtube.com/@felixlabofc?si=uCdc-20amQsP1DmV" target="_blank" rel="noopener"><img src="assets/youtube_icon_bg.png" class="btn-ico sm" alt=""> @felixlabofc</a>
+            <span>&copy; 2026 &middot; komunitas, bukan perusahaan</span>
+        </div>
+    </footer>
+
+    <!-- ===== BOTTOM NAV ===== -->
+    <nav class="bottom-nav" aria-label="Menu utama">
+        <button type="button" class="tabbtn bnav active" data-tab="home"><i class="fa-solid fa-house"></i><span>Home</span></button>
+        <button type="button" class="tabbtn bnav" data-tab="news"><i class="fa-solid fa-newspaper"></i><span>News</span></button>
+        <button type="button" class="tabbtn bnav" data-tab="community"><i class="fa-solid fa-users"></i><span>Community</span></button>
+        <button type="button" class="tabbtn bnav" data-tab="resources"><i class="fa-solid fa-download"></i><span>Files</span></button>
+    </nav>
+
+    <!-- ===== MODAL: Auth ===== -->
+    <div id="authModal" class="overlay">
+        <div class="modal">
+            <button type="button" class="modal-x" aria-label="Tutup" onclick="closeModal('authModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div id="authBody"></div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Profil ===== -->
+    <div id="profileModal" class="overlay">
+        <div class="modal">
+            <button type="button" class="modal-x" aria-label="Tutup" onclick="closeModal('profileModal')"><i class="fa-solid fa-xmark"></i></button>
+            <p class="modal-kicker">KAMU</p>
+            <h3 class="modal-title">Bikin identitasmu</h3>
+            <div class="pf-preview">
+                <img id="pfAvatarPreview" class="p-ava xl" src="https://api.dicebear.com/7.x/bottts/svg?seed=Guest" alt="" onerror="fxPfErr(this)">
+                <div>
+                    <div id="pfNamePreview" class="pf-name"></div>
+                    <div id="pfMeta" class="pf-meta mono"></div>
+                </div>
+            </div>
+            <label class="field-lbl">Nama tampilan</label>
+            <input id="pfName" type="text" maxlength="24">
+            <label class="field-lbl">URL foto profil</label>
+            <input id="pfAvatar" type="url" placeholder="https://…">
+            <div class="pf-or"><span>atau</span></div>
+            <button type="button" class="btn btn-ghost sm w-full" onclick="document.getElementById('pfFile').click()">
+                <i class="fa-solid fa-camera"></i> Upload foto dari galeri
+            </button>
+            <input id="pfFile" type="file" accept="image/png,image/jpeg,image/webp" class="hidden" onchange="uploadPfAvatar(this)">
+            <p class="field-hint" style="text-align:center;margin:0">JPG / PNG / WebP, maks 2MB. Auto jadi centang profil kamu.</p>
+            <p class="field-hint">…atau curi salah satu wajah bot:</p>
+            <div id="pfAvatarPicker" class="pg-grid"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-accent flex1" onclick="saveProfile()"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
+                <button type="button" class="btn btn-danger sm" onclick="signOut()" title="Keluar"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Admin ===== -->
+    <div id="adminModal" class="overlay">
+        <div class="modal wide">
+            <button type="button" class="modal-x" aria-label="Tutup" onclick="closeModal('adminModal')"><i class="fa-solid fa-xmark"></i></button>
+            <p class="modal-kicker">MODERASI</p>
+            <h3 class="modal-title">Lantai verified</h3>
+            <div id="adminList" class="admin-list"></div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: News ===== -->
+    <div id="newsModal" class="overlay">
+        <div class="modal wide">
+            <button type="button" class="modal-x" aria-label="Tutup" onclick="closeModal('newsModal')"><i class="fa-solid fa-xmark"></i></button>
+            <p class="modal-kicker">OFFICIAL</p>
+            <h3 class="modal-title">Tulis news</h3>
+            <label class="field-lbl">Judul</label>
+            <input id="newsTitle" type="text" maxlength="80" placeholder="Contoh: shader baru sudah rilis!">
+            <label class="field-lbl">Banner (URL gambar, opsional)</label>
+            <input id="newsImage" type="url" placeholder="https://…">
+            <label class="field-lbl">Isi pengumuman</label>
+            <textarea id="newsContent" rows="5" placeholder="Tulis dengan bahasa manusia…"></textarea>
+            <button type="button" class="btn btn-ink w-full" onclick="publishNews()"><i class="fa-solid fa-bullhorn"></i> Terbitkan</button>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Resource ===== -->
+    <div id="resourceModal" class="overlay">
+        <div class="modal wide">
+            <button type="button" class="modal-x" aria-label="Tutup" onclick="closeModal('resourceModal')"><i class="fa-solid fa-xmark"></i></button>
+            <input type="hidden" id="rId">
+            <p class="modal-kicker">ADMIN</p>
+            <h3 class="modal-title">Bagi file ke komunitas</h3>
+            <label class="field-lbl">Kategori</label>
+            <div id="rTagWrap" class="tag-opts"></div>
+            <input type="hidden" id="rTag" value="SHADER">
+            <label class="field-lbl">Judul</label>
+            <input id="rTitle" type="text" maxlength="60" placeholder="Contoh: Felix Ultra Clean v1.2">
+            <label class="field-lbl">URL file</label>
+            <input id="rUrl" type="url" placeholder="https://mediafire.com/…/shader.zip">
+            <div class="pf-or"><span>atau upload langsung</span></div>
+            <button type="button" class="btn btn-ghost sm w-full" onclick="document.getElementById('rFile').click()">
+                <i class="fa-solid fa-paperclip"></i> Pilih file (tipe apa saja, maks 50MB)
+            </button>
+            <input id="rFile" type="file" class="hidden" onchange="uploadResourceFile(this)">
+            <div id="rFileChip" class="att-chip hidden"></div>
+            <label class="field-lbl">Deskripsi singkat</label>
+            <textarea id="rDesc" rows="3" maxlength="200" placeholder="Buat HP apa aja? Ukuran? Catatan penting?"></textarea>
+            <button type="button" class="btn btn-ink w-full" onclick="saveResource()"><i class="fa-solid fa-floppy-disk"></i> Simpan resource</button>
+        </div>
+    </div>
+
+    <script src="app.js?v=5"></script>
+</body>
+</html>
