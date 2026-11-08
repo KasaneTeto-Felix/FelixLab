@@ -21,6 +21,8 @@
     --head:    'Bricolage Grotesque', system-ui, sans-serif;
     --body:    'DM Sans', system-ui, sans-serif;
     --mono:    'DM Mono', ui-monospace, monospace;
+    --ava-bg:  #fffdf7;   /* backplate avatar/SVG transparan — LIGHT = senada card dulu,
+                             dark dipisah token-nya #f2ecdf supaya ringan terlihat */
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -32,8 +34,12 @@ body {
     font-family: var(--body);
     font-size: 15px;
     color: var(--ink);
+    /* color-scheme mengikuti TEMA YANG DIPILIH (bukan sistem) — kalau nggak,
+       sistem dark + tema light = widget browser (scrollbar/picker/autofill)
+       dirender dark ke dalam UI terang = light mode "rusak" campur aduk */
+    color-scheme: light;
     background:
-        radial-gradient(circle, rgba(35,32,25,.10) 1px, transparent 1.4px);
+        radial-gradient(circle, color-mix(in srgb, var(--ink) 10%, transparent) 1px, transparent 1.4px);
     background-size: 22px 22px;
     min-height: 100dvh;
     overflow-x: hidden; /* rotasi hero tidak bikin scrollbar */
@@ -152,7 +158,7 @@ textarea { resize: vertical; }
     border: 2px solid transparent; /* anti-wobble saat active */
     transition: color .12s, background .12s;
 }
-.topbar-inner .tabbtn:hover { color: var(--ink); background: rgba(35,32,25,.06); }
+.topbar-inner .tabbtn:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); }
 .topbar-inner .tabbtn.active {
     color: var(--ink);
     background: var(--honey);
@@ -203,21 +209,19 @@ textarea { resize: vertical; }
 .user-caret button:hover { background: var(--honey); }
 .user-caret button.danger { color: var(--rose); }
 .user-caret button.danger:hover { background: #ffe4e4; }
-.user-caret .uc-hr { border: none; border-top: 2px dashed rgba(35,32,25,.18); margin: 4px 2px; }
+.user-caret .uc-hr { border: none; border-top: 2px dashed color-mix(in srgb, var(--ink) 18%, transparent); margin: 4px 2px; }
 
-/* badge verified/official */
-.b-blue  { background: #dbe7ff; color: var(--blue); border: 2px solid var(--blue); }
-.b-green { background: #dcf5e5; color: var(--green); border: 2px solid var(--green); }
+/* badge sederhana ala YouTube — lingkaran check ikon saja, no kapsul no miring */
+.b-blue  { color: #339cfc; }
+.b-green { color: #3ec97e; }
 .badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    font: 700 9px var(--body); text-transform: uppercase; letter-spacing: .04em;
-    padding: 2px 7px; border-radius: 999px;
-    transform: rotate(-2deg);
+    display: inline-block; vertical-align: -2px; margin-left: 2px;
+    font-size: 14px; line-height: 1;
 }
 
 /* avatar */
 .p-ava {
-    border: var(--bd); border-radius: 12px; background: var(--card);
+    border: var(--bd); border-radius: 12px; background: var(--ava-bg);
     object-fit: cover; flex-shrink: 0;
 }
 .p-ava.sm { width: 26px; height: 26px; border-radius: 8px; }
@@ -257,7 +261,7 @@ main { max-width: 1060px; margin: 0 auto; padding: 26px 16px 120px; }
     background: linear-gradient(transparent 55%, rgba(255,255,255,.85) 55%);
     color: inherit; padding: 0 2px;
 }
-.hero-copy p { margin: 0 0 20px; font-size: 15px; color: rgba(35,32,25,.75); max-width: 46ch; }
+.hero-copy p { margin: 0 0 20px; font-size: 15px; color: color-mix(in srgb, var(--ink) 75%, transparent); max-width: 46ch; }
 .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
 
 .hero-art {
@@ -286,7 +290,7 @@ main { max-width: 1060px; margin: 0 auto; padding: 26px 16px 120px; }
 .sticker-mini {
     position: absolute; bottom: 2px; left: 4px;
     transform: rotate(5deg); font: 700 11px var(--mono);
-    background: var(--ink); color: #fff;
+    background: var(--ink); color: var(--paper);  /* ikut tema */
     border: var(--bd); padding: 7px 10px;
     animation-delay: 2s;
 }
@@ -368,8 +372,8 @@ main { max-width: 1060px; margin: 0 auto; padding: 26px 16px 120px; }
 .img-fail {
     display: flex; align-items: center; gap: 9px;
     margin-top: 10px; padding: 15px 14px;
-    border: 2px dashed rgba(35,32,25,.3); border-radius: 10px;
-    background: rgba(35,32,25,.04);
+    border: 2px dashed color-mix(in srgb, var(--ink) 30%, transparent); border-radius: 10px;
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
     color: var(--muted); font: 600 12.5px var(--body);
 }
 
@@ -390,7 +394,7 @@ main { max-width: 1060px; margin: 0 auto; padding: 26px 16px 120px; }
     display: flex; align-items: center; gap: 7px;
     white-space: nowrap; overflow: hidden;
 }
-.p-name .badge { flex-shrink: 0; transform: rotate(0deg); }
+.p-name .badge { flex-shrink: 0; }
 .p-handle { font: 400 11px var(--mono); color: var(--muted); margin-top: 2px; }
 .p-tag {
     margin-left: auto; flex-shrink: 0;
@@ -404,11 +408,12 @@ main { max-width: 1060px; margin: 0 auto; padding: 26px 16px 120px; }
 .p-img {
     width: 100%; max-height: 420px; object-fit: cover;
     border: var(--bd); border-radius: 12px; margin-top: 12px;
+    background: var(--ava-bg);   /* PNG/SVG transparan ikon gelap tetap keliatan */
 }
 .p-foot {
     display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
     margin-top: 14px; padding-top: 12px;
-    border-top: 2px dashed rgba(35,32,25,.18);
+    border-top: 2px dashed color-mix(in srgb, var(--ink) 18%, transparent);
 }
 .chip-act {
     display: inline-flex; align-items: center; gap: 7px;
@@ -429,12 +434,12 @@ main { max-width: 1060px; margin: 0 auto; padding: 26px 16px 120px; }
 .c-feed { display: grid; gap: 10px; margin-top: 14px; }
 .cmt-row {
     background: var(--paper);
-    border: 2px solid rgba(35,32,25,.28);
+    border: 2px solid color-mix(in srgb, var(--ink) 28%, transparent);
     border-radius: 12px;
     padding: 10px 12px;
 }
 .cmt-top { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-.cmt-top .badge { transform: rotate(0); }
+.cmt-top .badge { vertical-align: -2px; }
 .cmt-time { margin-left: auto; font: 400 10px var(--mono); color: var(--muted); }
 .cmt-txt { font-size: 13.5px; line-height: 1.55; margin: 0; overflow-wrap: break-word; }
 .c-write { display: flex; gap: 8px; margin-top: 14px; }
@@ -449,7 +454,7 @@ main { max-width: 1060px; margin: 0 auto; padding: 26px 16px 120px; }
 .postbox-foot {
     display: flex; gap: 10px; align-items: center;
     margin-top: 12px; padding-top: 12px;
-    border-top: 2px dashed rgba(35,32,25,.18);
+    border-top: 2px dashed color-mix(in srgb, var(--ink) 18%, transparent);
 }
 .postbox-foot input { flex: 1; font-size: 12px; padding: 8px 11px; }
 .postbox.off { opacity: .55; pointer-events: none; }
@@ -458,12 +463,12 @@ main { max-width: 1060px; margin: 0 auto; padding: 26px 16px 120px; }
 .empty {
     display: flex; flex-direction: column; align-items: center; gap: 10px;
     padding: 46px 20px; text-align: center;
-    border: 2px dashed rgba(35,32,25,.3); border-radius: var(--r);
+    border: 2px dashed color-mix(in srgb, var(--ink) 30%, transparent); border-radius: var(--r);
     color: var(--muted); font-size: 13.5px;
 }
 .empty i { font-size: 26px; opacity: .5; }
 .loader-line {
-    height: 64px; border: 2px dashed rgba(35,32,25,.25);
+    height: 64px; border: 2px dashed color-mix(in srgb, var(--ink) 25%, transparent);
     border-radius: var(--r);
     display: grid; place-items: center;
     color: var(--muted); font: 400 12px var(--mono);
@@ -479,7 +484,7 @@ main { max-width: 1060px; margin: 0 auto; padding: 26px 16px 120px; }
 .res-acts { display: flex; gap: 6px; }
 .res-act {
     width: 32px; height: 32px; display: grid; place-items: center;
-    border: 2px solid rgba(35,32,25,.35); border-radius: 9px;
+    border: 2px solid color-mix(in srgb, var(--ink) 35%, transparent); border-radius: 9px;
     background: var(--paper); color: var(--muted); font-size: 12px;
 }
 .res-act:hover { color: var(--ink); border-color: var(--ink); }
@@ -488,7 +493,7 @@ main { max-width: 1060px; margin: 0 auto; padding: 26px 16px 120px; }
 .tag-opt {
     font: 700 11px var(--mono); letter-spacing: .08em;
     background: var(--paper); color: var(--muted);
-    border: 2px solid rgba(35,32,25,.3); border-radius: 999px;
+    border: 2px solid color-mix(in srgb, var(--ink) 30%, transparent); border-radius: 999px;
     padding: 8px 14px;
 }
 .tag-opt.on {
@@ -501,7 +506,7 @@ main { max-width: 1060px; margin: 0 auto; padding: 26px 16px 120px; }
 .att-chip {
     display: flex; align-items: center; gap: 8px;
     background: var(--paper);
-    border: 2px dashed rgba(35,32,25,.35);
+    border: 2px dashed color-mix(in srgb, var(--ink) 35%, transparent);
     border-radius: 10px;
     padding: 8px 10px;
     font: 700 12px var(--body);
@@ -516,7 +521,7 @@ main { max-width: 1060px; margin: 0 auto; padding: 26px 16px 120px; }
 .att-x, .att-dl {
     width: 26px; height: 26px; flex-shrink: 0;
     display: grid; place-items: center;
-    border: 2px solid rgba(35,32,25,.3); border-radius: 8px;
+    border: 2px solid color-mix(in srgb, var(--ink) 30%, transparent); border-radius: 8px;
     background: var(--card); color: var(--ink); font-size: 11px;
 }
 .att-dl { background: var(--honey); border-color: var(--ink); }
@@ -536,7 +541,7 @@ main { max-width: 1060px; margin: 0 auto; padding: 26px 16px 120px; }
 .res-soon {
     align-self: flex-start;
     font: 800 11px var(--mono); letter-spacing: .12em;
-    color: var(--muted); border: 2px dashed rgba(35,32,25,.3);
+    color: var(--muted); border: 2px dashed color-mix(in srgb, var(--ink) 30%, transparent);
     border-radius: 999px; padding: 6px 12px;
     transform: rotate(-3deg);
 }
@@ -588,7 +593,7 @@ footer a:hover { color: var(--rose); }
     display: flex; align-items: center; gap: 10px;
     background: var(--ink); color: var(--paper);
     border: 2px solid var(--ink); border-radius: 999px;
-    box-shadow: 4px 4px 0 rgba(35,32,25,.25);
+    box-shadow: 4px 4px 0 color-mix(in srgb, var(--ink) 25%, transparent);
     font: 700 13px var(--body);
     padding: 11px 20px; max-width: calc(100vw - 32px);
     animation: toastin .2s ease-out both;
@@ -658,11 +663,12 @@ footer a:hover { color: var(--rose); }
 .pf-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
 .pg-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
 .pg-dot {
-    background: var(--paper); border: 2px solid rgba(35,32,25,.35);
+    background: var(--paper); border: 2px solid color-mix(in srgb, var(--ink) 35%, transparent);
     border-radius: 10px; padding: 3px; cursor: pointer;
-    transition: all .12s;
+    /* dulu: transition: all .12s → bikin browser cek ULANG tiap properti tiap frame (jank di HP 2GB) */
+    transition: border-color .12s, transform .12s, box-shadow .12s;
 }
-.pg-dot img { display: block; width: 100%; aspect-ratio: 1; border-radius: 7px; background: var(--card); }
+.pg-dot img { display: block; width: 100%; aspect-ratio: 1; border-radius: 7px; background: var(--ava-bg); }
 .pg-dot:hover { border-color: var(--ink); transform: rotate(-3deg); }
 .pg-dot.on { border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--accent); border-radius: 10px; padding: 2px; }
 
@@ -671,7 +677,7 @@ footer a:hover { color: var(--rose); }
 .admin-row {
     display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
     background: var(--paper);
-    border: 2px solid rgba(35,32,25,.28); border-radius: 12px;
+    border: 2px solid color-mix(in srgb, var(--ink) 28%, transparent); border-radius: 12px;
     padding: 10px 12px; font-size: 12.5px;
 }
 .admin-ro-who { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
@@ -692,7 +698,7 @@ footer a:hover { color: var(--rose); }
     display: flex; align-items: center; gap: 10px;
     color: var(--muted); font: 700 10px var(--mono); letter-spacing: .12em;
 }
-.pf-or::before, .pf-or::after { content: ""; flex: 1; border-top: 2px dashed rgba(35,32,25,.25); }
+.pf-or::before, .pf-or::after { content: ""; flex: 1; border-top: 2px dashed color-mix(in srgb, var(--ink) 25%, transparent); }
 .admin-lbl {
     font: 800 10px var(--mono); letter-spacing: .1em; color: var(--blue);
     border: 2px dashed var(--blue); border-radius: 999px; padding: 3px 9px;
@@ -713,8 +719,14 @@ footer a:hover { color: var(--rose); }
     .hero { grid-template-columns: 1fr; padding: 22px 18px; gap: 18px; min-height: 0; }
     .display { margin: 12px 0 8px; }
     .hero-copy p { font-size: 14px; margin-bottom: 16px; }
-    .hero-cta { flex-direction: column; }
-    .hero-cta .btn { width: 100%; }
+    .hero-cta { flex-direction: column; gap: 10px; }
+    .hero-cta .btn {
+        width: 100%;
+        min-height: 52px;          /* tombol CTA bener2 enak ditekan */
+        padding: 14px 18px;
+        font-size: 15.5px;
+    }
+    .hero-cta .btn-ico { width: 22px; height: 22px; }
 
     /* hero HP: maskot full-row di atas, bubble + label kecil sejajar di bawah — anti-tabrakan */
     .hero-art { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; min-height: 0; }
@@ -742,9 +754,15 @@ footer a:hover { color: var(--rose); }
 @media (max-width: 640px) {
     body { font-size: 14.5px; }
 
+    /* tipografi HP: judul pas, teks bernapas */
+    .display { font-size: clamp(25px, 7vw, 31px); line-height: 1.12; }
+    .feed-head h2 { font-size: 22px; gap: 10px; }
+    .feed-sub { line-height: 1.55; }
+    .info-card { padding: 16px 15px; }
+
     /* teks input 16px = iOS tidak zoom saat fokus */
     input, textarea, select { font-size: 16px; }
-    .search-bar input, .postbox-foot input { font-size: 16px; }
+    .search-bar input { font-size: 16px; flex: 1; width: auto; }
 
     /* target sentuh nyaman tapi tidak membengkak */
     .btn.sm { padding: 10px 14px; }
@@ -754,10 +772,14 @@ footer a:hover { color: var(--rose); }
     .p-ava.sm { width: 30px; height: 30px; }
     .p-ava.md { width: 42px; height: 42px; }
 
-    /* header: brand + tombol aja; indikator status dipangkas */
-    .status-strip { font-size: 9px; padding: 2px 6px; border-width: 1.5px; }
+    /* header 320-640px: logo doang + tombol auth ringkas → tidak ada yang lewat layar */
+    .brand-words, .status-strip { display: none; }
+    .topbar-inner { gap: 8px; padding: 9px 12px; }
+    .topbar-actions { gap: 6px; }
+    .authbar-slot { gap: 6px; }
+    .authbar-slot .btn { padding: 9px 12px; font-size: 12.5px; box-shadow: var(--sh-sm); }
+    .user-chip { padding: 4px 10px 4px 4px; }
     .user-chip .chip-name, .user-chip .badge { display: none; }
-    .brand-words { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     /* modal jadi bottom sheet menempel bawah */
     .overlay { padding: 0; align-items: flex-end; }
@@ -775,7 +797,7 @@ footer a:hover { color: var(--rose); }
         transform: translateX(-50%);
         width: 46px; height: 5px;
         border-radius: 99px;
-        background: rgba(35,32,25,.25);
+        background: color-mix(in srgb, var(--ink) 25%, transparent);
     }
     .modal-x { top: 14px; right: 14px; width: 36px; height: 36px; }
     .modal .btn.w-full { min-height: 44px; }
@@ -812,6 +834,302 @@ footer a:hover { color: var(--rose); }
     .bottom-nav { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-    .sticker { animation: none; }
+    .sticker, .feed > *, .res-grid > *, .c-sec:not(.hidden),
+    .cmt-row, #consentBar, .loader-line { animation: none; }
     html { scroll-behavior: auto; }
 }
+
+/* ==========================================================
+   HOTFIX: komentar accordion + animasi halus + render lazy
+   ========================================================== */
+/* —— komentar accordion —— */
+.c-sec { position: relative; }
+.c-sec .c-feed {
+    margin-top: 12px; padding-top: 10px;
+    border-top: 2px dashed color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.c-empty { color: var(--muted); font-size: 12.5px; margin: 6px 0 10px; }
+.cmt-count { font-weight: 800; }
+.chip-chev { font-size: 10px; margin-left: 3px; transform: translateY(1px); transition: transform .22s cubic-bezier(.2,.7,.3,1); }
+.cmt-toggle.on .chip-chev { transform: translateY(1px) rotate(180deg); }
+.cmt-toggle.on { background: #fff7dd; }
+
+/* —— render lazy di feed panjang — mitosnya lag, ini obatnya —— */
+.post-card {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 420px;
+}
+
+/* —— animasi halus (hanya bila user tidak mengurangi gerak) —— */
+@media (prefers-reduced-motion: no-preference) {
+    @keyframes rise {
+        from { opacity: 0; transform: translateY(14px); }
+        to   { opacity: 1; transform: none; }
+    }
+    .feed > * {
+        animation: rise .32s cubic-bezier(.2, .7, .25, 1) backwards;
+    }
+    .feed > *:nth-child(1) { animation-delay: 0s; }
+    .feed > *:nth-child(2) { animation-delay: .05s; }
+    .feed > *:nth-child(3) { animation-delay: .10s; }
+    .feed > *:nth-child(4) { animation-delay: .15s; }
+    .feed > *:nth-child(n+5) { animation-delay: .18s; }
+
+    .res-grid > * { animation: rise .3s cubic-bezier(.2, .7, .25, 1) backwards; }
+    .res-grid > *:nth-child(2) { animation-delay: .05s; }
+    .res-grid > *:nth-child(3) { animation-delay: .1s; }
+    .res-grid > *:nth-child(n+4) { animation-delay: .14s; }
+
+    .c-sec:not(.hidden) { animation: rise .24s cubic-bezier(.2,.7,.3,1) both; }
+    .loader-line { animation: rise .2s ease-out both; }
+    .cmt-row { animation: rise .18s ease-out both; }
+}
+
+/* anti-blink: re-render (realtime / search / simpan) tidak boleh animate semua kartu ulang */
+.feed.quiet > *,
+.res-grid.quiet > *
+{ animation: none !important; }
+
+/* tombol paginasi feed — tampil jelas tapi tidak mencuri perhatian */
+.feed-more { margin: 12px 0 4px; }
+.feed-more .btn { flex-direction: row; }
+
+/* ==========================================================
+   DARK MODE — tinta jadi terang, kertas jadi malam
+   semua border/shadow otomatis terbalik karena pakai var(--ink)
+   ========================================================== */
+body.theme-dark {
+    /* palet malam bersih: batu arang hangat-netral (bukan cokelat lumpur),
+       kontras amber oranye tetap nyala — semacam YouTube dark, tapi tetap zine.
+       --muted penting: timestamp/@username/hint/deskripsi SEMUA pakai ini —
+       dulu #99948b di atas card cuma ~3.4:1 = "tulisan nyatu" pelakunnya */
+    --paper:   #15151a;
+    --ink:     #eae6de;
+    --muted:   #a59f94;
+    --card:    #1e1e22;
+    --accent:  #ff8a4d;
+    --accent-d:#ffab7e;
+    --honey:   #eac96b;
+    --rose:    #ff7272;
+    --green:   #5fd090;
+    --blue:    #82b3ff;
+    /* backplate terang DI BELAKANG avatar/SVG transparan — kalau nggak,
+       bot svg berwarna gelap + gambar PNG transparan nyatu sama kartu hitam */
+    --ava-bg:  #f2ecdf;
+    /* browser dirender widget bawaan (date/autocomplete/file-picker/scrollbar)
+       pakai skema gelap → teks & angka native nggak lagi hitam-nyatu */
+    color-scheme: dark;
+    /* dulu: border & shadow ikut var(--ink) terang → outline krem dan shadow
+       GLOW krem di semua kartu (sumber "goofy" paling besar). Di malam,
+       zine tetap terlihat dari BORDER tipis + SHADOW hitam yang tenang: */
+    --bd:      1.5px solid color-mix(in srgb, var(--ink) 48%, transparent);
+    --sh:      4px 4px 0 rgba(0,0,0,.5);
+    --sh-sm:   2px 2px 0 rgba(0,0,0,.42);
+}
+/* dot-grid kertas di-dim jadi 5% — pola masih ada tapi nggak berisik */
+body.theme-dark {
+    background: var(--paper);
+    background-image: radial-gradient(circle, color-mix(in srgb, var(--ink) 5%, transparent) 1px, transparent 1.4px);
+    background-size: 22px 22px;
+}
+
+/* pastel permukaan terang → versi malam */
+body.theme-dark .chip-act.on,
+body.theme-dark .admin-act.take,
+body.theme-dark .user-caret button.danger:hover,
+body.theme-dark .cmt-toggle.on { background: color-mix(in srgb, var(--ink) 10%, var(--card)); }
+body.theme-dark .admin-act.blue { background: color-mix(in srgb, var(--blue) 20%, var(--card)); }
+body.theme-dark .admin-act.give { background: color-mix(in srgb, var(--green) 20%, var(--card)); }
+body.theme-dark .set-opt.on { color: #1b1b1f; }
+body.theme-dark .p-tag {
+    background: color-mix(in srgb, var(--honey) 16%, var(--card));
+    color: #f2d685;                                  /* dulu honey token — kurang kontras di pill mini */
+    border-color: color-mix(in srgb, var(--honey) 55%, transparent);
+}
+body.theme-dark .admin-act.cur { opacity: .62; }     /* dulu .45 — hilang di malam */
+/* badge malam: ikon sedikit dinaikkan kecerahannya biar tetap pop di dark */
+body.theme-dark .badge.b-blue { color: #8cbaff; }
+body.theme-dark .badge.b-green { color: #6fdd9f; }
+body.theme-dark .perm-badge.ok { background: color-mix(in srgb, var(--green) 16%, var(--card)); color: var(--green); }
+body.theme-dark .perm-badge.warn { background: color-mix(in srgb, var(--honey) 16%, var(--card)); color: var(--honey); }
+body.theme-dark .status-strip.warn { color: var(--honey); }
+/* teks di atas warna terang = tidak boleh krem (noseringan) — SEMUA bg honey tetap kuning di malam → teks/ikon di atasnya WAJIB gelap.
+   dulu: teks ikut var(--ink) krem di atas kuning = washed = "ikon/angka gak keliatan" */
+body.theme-dark .brand-badge,
+body.theme-dark .topbar-inner .tabbtn.active,
+body.theme-dark .sort-chip.on,
+body.theme-dark .tag-opt.on,
+body.theme-dark .res-tag,
+body.theme-dark .att-dl,
+body.theme-dark .bnav.active,
+body.theme-dark .auth-tab.active,
+body.theme-dark .user-caret button:hover { color: #1b1b1f; }
+body.theme-dark .att-dl { border-color: rgba(0,0,0,.45); }
+body.theme-dark .hero {
+    color: #1b1b1f;                                  /* judul & paragraf hero inherit */
+    border-color: #1b1b1f;
+    box-shadow: 6px 6px 0 rgba(0,0,0,.5);
+}
+body.theme-dark .att-name i { color: #ff9a63; }      /* ikon kertas lampiran tetap hangat */
+body.theme-dark ::selection { background: var(--accent); color: #15151a; }
+/* anak-anak hero yang duduk di bg CARD (bukan honey) → inherit gelap dari .hero
+   bikin teks gelap-di-kartu-gelap. Kembalikan cream: */
+body.theme-dark .kicker,
+body.theme-dark .sticker-speech,
+body.theme-dark .sticker:not(.sticker-mini) { color: var(--ink); }
+/* putih di atas oranye malam #ff8a4d = washed → teks gelap (tetap reads) */
+body.theme-dark .btn-accent,
+body.theme-dark .ico-news,
+body.theme-dark .ico-comm,
+body.theme-dark .ico-res { color: #1b1b1f; }
+body.theme-dark .btn-danger { background: var(--card); }
+body.theme-dark .display mark { background: linear-gradient(transparent 58%, rgba(255,122,56,.32)); }
+/* JANGAN kasih warna krem ke paragraf hero — hero bg tetap honey di dark,
+   teksnya wajib gelap (dulu rgba krem .72 di atas kuning = washed banget) */
+body.theme-dark input::placeholder,
+body.theme-dark textarea::placeholder { color: #9a9285; }
+body.theme-dark .img-fail { background: rgba(255,255,255,.04); border-color: rgba(234,230,222,.28); }
+
+/* transisi lembut saat switch tema */
+body.theme-fade .card,
+body.theme-fade .modal,
+body.theme-fade input,
+body.theme-fade textarea,
+body.theme-fade .sticker,
+body.theme-fade .bottom-nav,
+body.theme-fade .chip-act,
+body.theme-fade #topbar {
+    transition: background-color .35s ease, border-color .35s ease,
+                box-shadow .35s ease, color .25s ease;
+}
+
+/* modal setelan */
+.theme-opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.set-opt {
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    font: 700 12px var(--body); color: var(--ink);
+    padding: 13px 4px;
+    background: var(--paper);
+    border: var(--bd); border-radius: 12px;
+    box-shadow: var(--sh-sm);
+}
+.set-opt i { font-size: 17px; }
+.set-opt.on { background: var(--honey); }
+.set-info {
+    font-size: 11.5px; color: var(--muted); line-height: 1.55;
+    margin: 4px 0 2px;
+    display: flex; gap: 7px; align-items: flex-start;
+}
+.set-info i { margin-top: 2px; }
+
+/* ===== cookie consent bar ===== */
+#consentBar {
+    position: fixed; left: 14px; right: 14px; z-index: 60;
+    bottom: calc(72px + env(safe-area-inset-bottom));
+    background: var(--card); border: var(--bd); border-radius: 14px;
+    box-shadow: var(--sh);
+    padding: 13px 15px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    font-size: 12.5px; line-height: 1.45;
+    animation: rise .28s cubic-bezier(.2,.7,.3,1) both;
+}
+@media (min-width: 861px) {
+    #consentBar { bottom: 16px; left: auto; max-width: 560px; transform: translateX(-50%); left: 50%; }
+    /* versi PC: napas lebih lega */
+}
+#consentBar.hidden + footer { margin-bottom: 0; }
+#consentBar > p { margin: 0; flex: 1 1 250px; min-width: 0; }
+#consentBar p i { color: var(--accent-d); }
+.consent-act { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.consent-act .btn { flex-shrink: 0; }
+
+/* ===== privacy body ===== */
+.privacy-body {
+    font-size: 13.5px; line-height: 1.62; color: var(--ink);
+    max-height: 52dvh; overflow-y: auto;
+    padding-right: 6px;
+}
+.privacy-body h4 {
+    font: 800 14px var(--head); margin: 14px 0 4px;
+}
+.privacy-body h4:first-child { margin-top: 0; }
+.privacy-body ul { margin: 4px 0 8px 18px; padding: 0; }
+.privacy-body li { margin-bottom: 4px; }
+.privacy-body p { margin: 4px 0 8px; }
+.privacy-body a { color: var(--accent-d); font-weight: 700; }
+.privacy-upd {
+    font: 600 11px var(--mono); color: var(--muted);
+    border-bottom: 2px dashed color-mix(in srgb, var(--ink) 25%, transparent);
+    padding-bottom: 8px; margin-bottom: 10px;
+}
+.cookie-chip {
+    font: 600 11px var(--mono);
+    background: var(--paper); border: 2px solid color-mix(in srgb, var(--ink) 28%, transparent);
+    border-radius: 6px; padding: 1px 6px;
+}
+
+/* ==========================================================
+   REAKSI ala Discord (komentar) + RATING bintang (resource)
+   ========================================================== */
+.rx-row { display: flex; align-items: center; gap: 6px; margin-top: 7px; min-height: 24px; }
+.rx-add {
+    width: 24px; height: 24px; flex-shrink: 0;
+    display: grid; place-items: center;
+    background: var(--card); border: 1.5px dashed color-mix(in srgb, var(--ink) 28%, transparent);
+    border-radius: 999px; color: var(--muted); font-size: 11px;
+    transition: color .12s, border-color .12s;
+}
+.rx-add:hover { color: var(--ink); border-color: var(--ink); opacity: 1; }
+.rx-chips { display: flex; flex-wrap: wrap; gap: 5px; min-width: 0; }
+.rx-chips:empty { display: none; }
+.rx-chip {
+    font-size: 12px; line-height: 1;
+    padding: 3px 8px;
+    background: var(--paper);
+    border: 1.5px solid color-mix(in srgb, var(--ink) 24%, transparent);
+    border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 4px;
+    cursor: pointer;
+    transition: background .12s, border-color .12s, transform .1s;
+}
+.rx-chip:active { transform: translate(1px, 1px); }
+.rx-chip b { font-size: 10.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rx-chip.on { border-color: var(--accent-d); background: color-mix(in srgb, var(--accent) 13%, var(--card)); }
+.rx-chip.on b { color: var(--accent-d); }
+#rx-tray {
+    position: fixed; margin: 0;
+    display: flex; gap: 2px; padding: 5px;
+    background: var(--card); border: var(--bd); border-radius: 999px;
+    box-shadow: var(--sh);
+}
+#rx-tray::backdrop { background: transparent; }
+#rx-tray button {
+    font-size: 17px; line-height: 1;
+    padding: 5px 8px;
+    background: none; border: none; border-radius: 10px;
+    transition: background .12s, transform .1s;
+}
+#rx-tray button:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); transform: scale(1.15); }
+
+/* rating bintang */
+.rate-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 2px 0; }
+.rate-stat { font: 700 12px var(--body); color: var(--muted); display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.rate-stat i { color: var(--honey); font-size: 11px; }
+.rate-stat b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.rate-stat span { font-weight: 500; }
+.rate-stars { display: inline-flex; gap: 1px; }
+.rate-star {
+    width: 26px; height: 26px;
+    background: none; border: none; border-radius: 7px;
+    color: color-mix(in srgb, var(--ink) 38%, transparent);
+    font-size: 15px;
+    display: grid; place-items: center;
+    cursor: pointer;
+    transition: transform .1s, color .12s;
+}
+.rate-star:hover { color: var(--honey); transform: scale(1.18) rotate(-6deg); }
+.rate-star.on { color: var(--honey); }
+
+/* dark: bintang honey cukup terang, chip rx kontras */
+body.theme-dark .rate-star { color: color-mix(in srgb, var(--ink) 45%, transparent); }
+body.theme-dark .rate-stat i { color: var(--honey); }

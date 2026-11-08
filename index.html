@@ -3,13 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f1e7">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15151a">
     <title>Felix Lab — Warung Komunitas</title>
+    <!-- === KEAMANAN SISI-BROWSER (tanpa server) ===
+         CSP membatasi: script cuma dari CDN resmi (jsDelivr) + inline handler,
+         koneksi data CUMA ke Supabase, frames diblokir total,
+         referrer tidak pernah bocor ke situs luar -->
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://bsydwicfqlfzrglvcwyf.supabase.co wss://bsydwicfqlfzrglvcwyf.supabase.co; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <script>try{if(self!==top){top.location=document.location}}catch(e){}</script>
+    <!-- === KINERJA: buka saluran koneksi duluan biar first load nyaris instan === -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://bsydwicfqlfzrglvcwyf.supabase.co">
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Sans:opsz,wght@9..40,400..800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0" integrity="sha384-gnyZit14c5lnGcarmA166QQjjJXpucw25ogZXuwH3HxxY904zHkBqmxVpelsPorb" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css?v=21">
     <link rel="icon" type="image/png" href="assets/yt-profile.png">
 </head>
 <body>
@@ -35,6 +48,9 @@
             </nav>
 
             <div class="topbar-actions">
+                <button type="button" class="icon-btn" onclick="openSettings()" title="Pengaturan">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
                 <div id="authBar" class="authbar-slot"></div>
             </div>
         </div>
@@ -60,7 +76,7 @@
                 </div>
                 <div class="hero-art" aria-hidden="true">
                     <div class="sticker sticker-ava">
-                        <img src="assets/yt-profile.png?v=5" alt="Maskot Felix Lab">
+                        <img src="assets/yt-profile.png?v=21" alt="Maskot Felix Lab" fetchpriority="high" decoding="async">
                     </div>
                     <div class="sticker sticker-speech"><span>woi, ikut diskusi dong!</span> <i class="fa-solid fa-hand-point-left"></i></div>
                     <div class="sticker sticker-mini">RAM 2GB aman</div>
@@ -158,11 +174,114 @@
 
     </main>
 
+    <!-- ===== MODAL: Privacy ===== -->
+    <div id="privacyModal" class="overlay">
+        <div class="modal wide">
+            <button type="button" class="modal-x" aria-label="Tutup" onclick="closeModal('privacyModal')"><i class="fa-solid fa-xmark"></i></button>
+            <p class="modal-kicker">TRANSPARAN</p>
+            <h3 class="modal-title">Kebijakan Privasi</h3>
+            <div class="privacy-body">
+                <p class="privacy-upd">Terakhir diperbarui: 8 November 2026 · berlaku untuk web Felix Lab Community</p>
+
+                <h4>1. Siapa kami</h4>
+                <p>Web ini adalah komunitas fans yang dijalankan sendiri oleh <b>Felix Lab</b> (pemilik &amp; pengelola) sebagai tempat nongkrong subscriber YouTube
+                <a href="https://youtube.com/@felixlabofc?si=uCdc-20amQsP1DmV" target="_blank" rel="noopener">@felixlabofc</a>. Web ini bukan perusahaan, tidak menjalankan iklan,
+                dan tidak melakukan aktivitas bisnis berbayar terhadap datamu.</p>
+
+                <h4>2. Ringkasan singkat (no drama)</h4>
+                <ul>
+                    <li>Kami <b>tidak menjual, tidak menyewakan, tidak membagikan</b> datamu ke pihak ketiga untuk kepentingan siapa pun.</li>
+                    <li><b>Tidak ada iklan, tidak ada pelacak pihak ketiga, tidak ada profil iklan</b> yang dibangun dari aktivitasmu.</li>
+                    <li>Data yang ada hanyalah data yang <b>kamu isi sendiri</b> saat pakai web ini.</li>
+                </ul>
+
+                <h4>3. Data yang tersimpan saat kamu pakai web ini</h4>
+                <ul>
+                    <li><b>Akun:</b> email (untuk verifikasi &amp; login), username, nama tampilan, dan avatar.</li>
+                    <li><b>Kontenmu:</b> postingan di community, komentar, like yang kamu berikan, lampiran file yang kamu pilih, dan gambar yang kamu tautkan.</li>
+                    <li><b>File upload:</b> foto profil (maks 2 MB), lampiran komentar (maks 20 MB), dan file resource di-upload admin (maks 50 MB) — disimpan pada storage Supabase.</li>
+                    <li><b>Metadata teknis:</b> waktu membuat konten, dan relasi antar data (mis. siapa me-like apa) — semuanya berada dalam database Supabase milik web ini.</li>
+                </ul>
+                <p>Kami <b>tidak</b> meminta data sensitif seperti NIK/KTP, data keuangan, lokasi GPS, atau kontak kamarmu. Tolong jangan menuliskan data semacam itu di kontenmu.</p>
+
+                <h4>4. Cookie &amp; penyimpanan lokal</h4>
+                <p>Web ini memakai cookie &amp; local storage <b>fungsional saja</b> (bukan pelacak):</p>
+                <ul>
+                    <li><code class="cookie-chip">fx_theme</code> — cookie <b>fungsional</b>: menyimpan pilihan temamu (terang/gelap/ikut HP) supaya nggak balik ke default tiap buka (365 hari). Aktif begitu kamu sendiri memilih tema — sama seperti YouTube mengingat preferensimu.</li>
+                    <li><code class="cookie-chip">fx_consent</code> — catatan jawabanmu di banner cookie: diterima atau ditolak (365 hari). Cookie wajib, supaya kami tidak menanyakan hal itu berulang-ulang.</li>
+                    <li><code class="cookie-chip">fx_banner</code> — tanda banner cookie sudah pernah tersaji di perangkatmu, supaya tidak muncul terus-menerus setiap reload (cookie wajib).</li>
+                    <li><code class="cookie-chip">sb-*</code> — kredensial sesi login milik Supabase Auth, supaya kamu tidak perlu login ulang setiap membuka web.</li>
+                </ul>
+                <p><b>Kontrolmu tetap penuh:</b> di Setelan (ikon ⚙️) kamu bisa mengubah jawaban banner (terima/tolak) kapan saja, atau <b>Hapus preferensi perangkat ini</b> yang menghapus semuanya seketika — termasuk tema.</p>
+
+                <h4>5. Layanan pihak ketiga yang dipakai</h4>
+                <ul>
+                    <li><b>Supabase</b> — menyimpan database (akun, konten) dan file storage. Kebijakan: supabase.com/privacy.</li>
+                    <li><b>Google</b> — hanya bila kamu memilih login "Lanjut dengan Google". Google menangani prosesnya sesuai ketentuan Google sendiri.</li>
+                    <li><b>DiceBear</b> — penyedia gambar avatar default (server mereka melihat permintaan gambar saja, tanpa data personalmu).</li>
+                    <li><b>Google Fonts &amp; Font Awesome (CDN)</b> — sumber font/ikon tampilan.</li>
+                </ul>
+                <p>Praktik data dari layanan tersebut diatur oleh kebijakan privasinya masing-masing; web ini tidak mengirim data tambahan ke mereka di luar yang technically diperlukan.</p>
+
+                <h4>6. Login dengan Google</h4>
+                <p>Kalau kamu memilih "Lanjut dengan Google", Google hanya mengirim ke web ini <b>Nama, email, dan avatar profil dasar</b> dari akun Google-mu. Tidak ada perizinan membaca email, kalender, atau apa pun lain.
+                Tidak ingin pakai Google? Login dengan email &amp; kata sandi biasa — fitur web sama lengkapnya.</p>
+
+                <h4>7. Moderasi &amp; centang verified</h4>
+                <p>Konten yang melanggar aturan komunitas (spam, SARA, konten dewasa, doxing, penipuan) dapat dihapus oleh moderator, dan akun pelanggar dapat dicabut centangnya.
+                Moderasi hanya menyentuh <b>konten yang tampil publik</b> — moderator tidak membaca data pribadimu di balik layar.</p>
+
+                <h4>8. Keamanan data</h4>
+                <ul>
+                    <li>Akses database dilindungi <b>Row Level Security (RLS)</b> — user biasa tidak bisa menyentuh data orang lain; hanya pemilik web yang memegang peran admin.</li>
+                    <li>Kata sandamu dipegang oleh <b>Supabase Auth</b> (di-hash, tidak pernah tersimpan dalam bentuk asli di web ini).</li>
+                    <li>File yang di-upload hanya bisa dihapus/diganti oleh pemiliknya (avatar, lampiran) atau admin (file resource).</li>
+                </ul>
+
+                <h4>9. Usia minimum</h4>
+                <p>Web ini ditujukan untuk usia <b>13 tahun ke atas</b> (atau usia minimum yang diwajibkan negaramu). Kalau kamu di bawah itu, izinkan orang tua/walmu dulu sebelum membuat akun — dan tolong jangan share data pribadi di publik.</p>
+
+                <h4>10. Hak-hakmu atas data</h4>
+                <ul>
+                    <li><b>Lihat &amp; koreksi</b> — data profilmu bisa kamu lihat &amp; ubah sendiri di menu profil.</li>
+                    <li><b>Hapus konten</b> — kontenmu dapat dihapus dari UI, atau diminta ke admin.</li>
+                    <li><b>Hapus akun &amp; seluruh data</b> — kirim permintaan ke email di bawah; diproses manual oleh pemilik web.</li>
+                    <li><b>Tarik persetujuan cookie</b> — kapan saja lewat Setelan → Tolak cookie / Hapus preferensi.</li>
+                </ul>
+
+                <h4>11. Perubahan kebijakan</h4>
+                <p>Kebijakan ini bisa diperbarui sewaktu-waktu seiring fitur bertambah. Setiap perubahan dicatat di tanggal "Terakhir diperbarui" di atas. Menutup banner cookie tidak memengaruhi hakmu atas data.</p>
+
+                <h4>12. Kontak</h4>
+                <p>Pertanyaan, keberatan, atau permintaan soal privasi &amp; datamu:</p>
+                <ul>
+                    <li>Email: <a href="mailto:felixmikhailovnakujou@gmail.com">felixmikhailovnakujou@gmail.com</a></li>
+                    <li>YouTube: <a href="https://youtube.com/@felixlabofc?si=uCdc-20amQsP1DmV" target="_blank" rel="noopener">@felixlabofc</a></li>
+                </ul>
+                <p>Kami berusaha menjawab dalam waktu wajar (idealnya &lt; 7 hari).</p>
+            </div>
+            <button type="button" class="btn btn-ink w-full" onclick="closeModal('privacyModal'); acceptConsent()">
+                <i class="fa-solid fa-cookie-bite"></i> Mengerti, lanjut
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== CONSENT BAR (izin cookie) ===== -->
+    <div id="consentBar" class="hidden">
+        <p><i class="fa-solid fa-cookie-bite"></i> Web ini pakai <b>cookie &amp; penyimpanan lokal</b> cuma buat preferensi tampilan (tema) dan sesi login — <b>nggak ada iklan, nggak ada pelacak</b>.</p>
+        <div class="consent-act">
+            <a href="#" class="linklike" onclick="event.preventDefault(); openPrivacy()">Kebijakan privasi</a>
+            <button type="button" class="btn btn-ghost sm" onclick="rejectConsent()">Tolak</button>
+            <button type="button" class="btn btn-ink sm" onclick="acceptConsent()">Terima semua</button>
+        </div>
+    </div>
+
     <footer>
         <div class="foot-inner">
             <span class="foot-brand">FELIX<em>LAB</em></span>
             <a href="https://youtube.com/@felixlabofc?si=uCdc-20amQsP1DmV" target="_blank" rel="noopener"><img src="assets/youtube_icon_bg.png" class="btn-ico sm" alt=""> @felixlabofc</a>
             <span>&copy; 2026 &middot; komunitas, bukan perusahaan</span>
+            <a href="#" onclick="event.preventDefault(); openPrivacy()"><i class="fa-solid fa-shield-halved"></i> Kebijakan Privasi</a>
         </div>
     </footer>
 
@@ -173,6 +292,40 @@
         <button type="button" class="tabbtn bnav" data-tab="community"><i class="fa-solid fa-users"></i><span>Community</span></button>
         <button type="button" class="tabbtn bnav" data-tab="resources"><i class="fa-solid fa-download"></i><span>Files</span></button>
     </nav>
+
+    <!-- ===== MODAL: Settings ===== -->
+    <div id="settingsModal" class="overlay">
+        <div class="modal">
+            <button type="button" class="modal-x" aria-label="Tutup" onclick="closeModal('settingsModal')"><i class="fa-solid fa-xmark"></i></button>
+            <p class="modal-kicker">PENGATURAN</p>
+            <h3 class="modal-title">Setelan web</h3>
+            <label class="field-lbl">Tampilan</label>
+            <div class="theme-opts">
+                <button type="button" class="set-opt" data-mode="light" onclick="setTheme('light')">
+                    <i class="fa-solid fa-sun"></i> Terang
+                </button>
+                <button type="button" class="set-opt" data-mode="dark" onclick="setTheme('dark')">
+                    <i class="fa-solid fa-moon"></i> Gelap
+                </button>
+                <button type="button" class="set-opt" data-mode="auto" onclick="setTheme('auto')">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Ikut HP
+                </button>
+            </div>
+            <p class="set-info"><i class="fa-solid fa-circle-info"></i> Pilihan disimpan di <b>cookie penyimpanan lokal</b> perangkatmu (365 hari) — buka lagi besok, tetap ingat. Mode "Ikut HP" mengikuti setting gelap/terang sistem.</p>
+            <label class="field-lbl">Privasi &amp; data</label>
+            <p id="consentStatus" class="set-info" style="margin:0 0 8px"></p>
+            <div class="consent-act" style="margin-bottom:8px">
+                <button type="button" class="btn btn-ink sm" onclick="acceptConsent()"><i class="fa-solid fa-check"></i> Terima cookie</button>
+                <button type="button" class="btn btn-danger sm" onclick="rejectConsent()"><i class="fa-solid fa-ban"></i> Tolak cookie</button>
+            </div>
+            <button type="button" class="btn btn-ghost w-full" onclick="openPrivacy()">
+                <i class="fa-solid fa-shield-halved"></i> Kebijakan privasi &amp; cookie
+            </button>
+            <button type="button" class="btn btn-ghost w-full" onclick="resetMySettings()">
+                <i class="fa-solid fa-broom"></i> Hapus preferensi perangkat ini
+            </button>
+        </div>
+    </div>
 
     <!-- ===== MODAL: Auth ===== -->
     <div id="authModal" class="overlay">
@@ -266,6 +419,8 @@
         </div>
     </div>
 
-    <script src="app.js?v=5"></script>
+    <!-- tray emoji reaksi (Discord-style) -->
+    <dialog id="rx-tray"></dialog>
+    <script src="app.js?v=21"></script>
 </body>
 </html>
